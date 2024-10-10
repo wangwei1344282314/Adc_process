@@ -167,7 +167,7 @@ void FilterPeaks(FindPV &findPV, const std::vector<float>& Sample, float thresho
 }
 
 int main() {
-    std::ifstream file("/home/gzpeite/test/0.txt"); // 打开记事本文件
+    std::ifstream file("/home/gzpeite/Adc_process/0.txt"); // 打开记事本文件
     std::vector<float> values;      // 存储每一行的浮点数
 
     if (!file) {

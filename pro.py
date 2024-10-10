@@ -1,6 +1,44 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+def median_filter(data, kernel_size=3):
+    """
+    自己编写的中值滤波算法，适用于一维数据。
+    :param data: 输入数据 (numpy array)
+    :param kernel_size: 滑动窗口大小，必须为奇数 (int)
+    :return: 滤波后的数据 (numpy array)
+    """
+    # 输入数据长度
+    data_len = len(data)
+    
+    # 确保窗口大小是奇数
+    if kernel_size % 2 == 0:
+        raise ValueError("kernel_size 必须是奇数")
+    
+    # 定义输出数据，初始化为与输入相同的大小
+    filtered_data = np.zeros(data_len)
+    
+    # 计算窗口的半径（用于确定窗口的左右扩展范围）
+    k = kernel_size // 2
+    
+    # 遍历每个数据点
+    for i in range(data_len):
+        # 窗口的左边界和右边界
+        left = max(0, i - k)
+        right = min(data_len, i + k + 1)
+        
+        # 取当前窗口中的数据
+        window = data[left:right]
+        
+        # 对窗口内的数据排序，取中值
+        median_value = np.median(window)
+        
+        # 将中值赋给滤波后的数据
+        filtered_data[i] = median_value
+    
+    return filtered_data
+
+
 def moving_average_filter(data, window_size):
     filtered_data = []
     half_window = window_size // 2  # 
@@ -78,7 +116,7 @@ def plot_data(values, peaks, valleys):
     
     # # Plot peaks
     # if peaks:
-    #     plt.plot(peaks, [values[p] for p in peaks], 'ro', label='Peaks')
+    #     plt.plot(peaks, [values[p] for p in peaks], 'bo', label='Peaks')
     
     # Plot valleys
     if valleys:
@@ -94,9 +132,9 @@ def plot_data(values, peaks, valleys):
 
             # 
         if distance > 100:
-            color = 'red'  # 
+            color = 'red'  # 红色
         else:
-            color = 'blue'   # 
+            color = 'blue'   # 蓝色
 
         plt.text(mid_point, (values[valley1] + values[valley2]) / 2, str(distance), color=color, fontsize=12)
 
@@ -112,7 +150,7 @@ def plot_data(values, peaks, valleys):
 def main():
     # Open file and read values
     try:
-        with open(r"/home/gzpeite/test/0.txt") as file:
+        with open(r"/home/gzpeite/Adc_process/2.txt") as file:
             values = [float(line.strip()) for line in file.readlines()]
     except FileNotFoundError:
         print("无法打开文件!")
@@ -122,9 +160,9 @@ def main():
     for i, value in enumerate(values[:5]):
         print(f"Value {i + 1}: {value}")
 
-    window_size = 12
+    window_size = 15
     # Example filtered data
-    movingAvgFiltered = moving_average_filter(values, window_size)
+    movingAvgFiltered = median_filter(values, window_size)
 
     # movingAvgFiltered = values
 
